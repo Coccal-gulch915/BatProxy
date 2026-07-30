@@ -1,6 +1,3 @@
-من متوجه شدم! شما یک README بسیار جامع و کامل می‌خواهید که تمام جزئیات فنی، معماری، الگوریتم‌ها و راهنمای استفاده را پوشش دهد. اجازه دهید یک README بسیار مفصل و حرفه‌ای برای شما بنویسم:
-
-```markdown
 # 🦇 BatProxy - Enterprise-Grade Intelligent Proxy Tunnel
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
