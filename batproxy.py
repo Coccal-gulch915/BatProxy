@@ -11,6 +11,8 @@ from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import urlparse
 from configx import WORKERS
 import websocket
+import signal
+import sys
 
 try:
     from rich.console import Console
@@ -49,10 +51,6 @@ SLOW_PENALTY = 20.0
 RETRYABLE_METHODS = {"GET", "HEAD"}
 WS_PING_INTERVAL = 20
 
-# Each open tunnel keeps one thread parked in a blocking recv() call for
-# its whole lifetime, plus short-lived threads for sends/pings. Size the
-# pool generously so it can't starve under load (tune if you raise
-# MAX_CONN_PER_WORKER or add many workers).
 WS_EXECUTOR_WORKERS = 512
 ws_executor = ThreadPoolExecutor(max_workers=WS_EXECUTOR_WORKERS, thread_name_prefix="ws-io")
 
@@ -60,18 +58,28 @@ console = Console() if HAVE_RICH else None
 VERBOSE = False
 
 
-# --- sync -> async websocket bridge -------------------------------------
+def setup_signal_handlers():
+    def handler(sig, frame):
+        raise KeyboardInterrupt()
+    signal.signal(signal.SIGINT, handler)
+    signal.signal(signal.SIGTERM, handler)
+
+async def cleanup(server):
+    print("\n🛑 Cleaning up...")
+    server.close()
+    await server.wait_closed()
+    for task in asyncio.all_tasks():
+        if task is not asyncio.current_task():
+            task.cancel()
+    await asyncio.gather(*asyncio.all_tasks(), return_exceptions=True)
+    ws_executor.shutdown(wait=False)
+    print("✅ Cleanup complete")
 
 class ConnectionClosedError(Exception):
     pass
 
 
 class AsyncWS:
-    """Wraps a synchronous websocket-client WebSocket connection so it can
-    be used with the same async/await + `async for` patterns the rest of
-    this program was written against, without touching an event loop
-    thread with blocking socket calls."""
-
     __slots__ = ("_ws", "_loop", "_ping_task", "_closed")
 
     def __init__(self, raw_ws, loop):
@@ -98,7 +106,6 @@ class AsyncWS:
         except (websocket.WebSocketException, OSError) as e:
             raise ConnectionClosedError(str(e)) from e
         if msg is None or msg == "":
-            # websocket-client returns "" on a clean close in some versions
             if self._ws.connected:
                 return msg
             raise ConnectionClosedError("connection closed")
@@ -168,9 +175,6 @@ async def ws_connect(url, timeout=CONNECT_TIMEOUT, keepalive=0):
     if keepalive:
         ws.start_keepalive(keepalive)
     return ws
-
-
-# --- rest of the program (unchanged logic, now driven by AsyncWS) -------
 
 def make_token(password, subject):
     ts = str(int(time.time()))
@@ -853,10 +857,12 @@ async def main():
     args = parse_args()
     global VERBOSE
     VERBOSE = args.verbose
-
+    
+    setup_signal_handlers()
+    
     server = await asyncio.start_server(handle_client, args.host, args.port)
     engine = "uvloop" if HAVE_UVLOOP else "asyncio"
-
+    
     banner = (
         f"[bold]\U0001F987 Bat Proxy[/] listening on [cyan]{args.host}:{args.port}[/]  "
         f"(engine: {engine}, workers: {len(WORKERS)}, verbose: {VERBOSE})"
@@ -867,14 +873,20 @@ async def main():
     log(f"  Browser       : set proxy to {args.host}:{args.port} (HTTP or SOCKS5, all protocols)")
     if not HAVE_RICH:
         log("  (tip: pip install rich  -> colored live dashboard)")
-
+    
     tasks = [server.serve_forever(), dashboard_loop(), health_check_loop(), dest_cache_cleanup_loop()]
     if not args.no_web_dashboard:
         tasks.append(dashboard_web_server(args.dashboard_host, args.dashboard_port))
-
-    async with server:
+    
+    try:
         await asyncio.gather(*tasks)
-
+    except KeyboardInterrupt:
+        await cleanup(server)
+    except Exception as e:
+        print(f"Error: {e}")
+        await cleanup(server)
+    finally:
+        print("👋 Goodbye Batman!")
 
 if __name__ == "__main__":
     if HAVE_UVLOOP:
