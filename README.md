@@ -58,10 +58,6 @@
   - [Recommended Settings](#recommended-settings)
 - [Troubleshooting Guide](#-troubleshooting-guide)
 - [Frequently Asked Questions](#-frequently-asked-questions)
-- [Roadmap](#-roadmap)
-- [Contributing](#-contributing)
-- [License](#-license)
-- [Credits](#-credits)
 
 ---
 
