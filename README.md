@@ -1,17 +1,13 @@
-<p align="center">
-  <a href="README.md">English</a> | <a href="readmafa.md#مرحله-به-مرحله-نصب-و-راه‌اندازی">فارسی</a>
-</p>
-
-<p align="center">
-  <a href="#-quick-start">🚀 Quick Start</a>
-</p>
-
 # 🦇 BatProxy - Enterprise-Grade Intelligent Proxy Tunnel
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-orange.svg)](https://workers.cloudflare.com/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
+
+<p align="center">
+  <a href="README.md">English</a> | <a href="readmafa.md"</a> | <a href="readmafa.md#مرحله-به-مرحله-نصب-و-راه‌اندازی">فارسی</a>
+</p>
 
 ![BatProxy Banner](https://github.com/user-attachments/assets/37f66bd2-26ae-4eb8-a6ab-e90e130684a3)
 
