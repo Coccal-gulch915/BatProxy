@@ -13,7 +13,7 @@ from configx import WORKERS
 import websocket
 import signal
 import sys
-
+from colorama import init
 try:
     from rich.console import Console
     from rich.table import Table
@@ -57,6 +57,7 @@ ws_executor = ThreadPoolExecutor(max_workers=WS_EXECUTOR_WORKERS, thread_name_pr
 console = Console() if HAVE_RICH else None
 VERBOSE = False
 
+init()
 
 def setup_signal_handlers():
     def handler(sig, frame):
