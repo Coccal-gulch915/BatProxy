@@ -69,11 +69,11 @@
 
 ```
 ╔════════════════════════════════════════════════════════════════╗
-║                    🦇 BATPROXY v2.0                          ║
-║        Intelligent Proxy Tunnel for the Modern Web           ║
+║                        BATPROXY                                ║
+║        Intelligent Proxy Tunnel for the Modern Web             ║
 ╠════════════════════════════════════════════════════════════════╣
-║  HTTP/HTTPS  │  SOCKS5  │  Auto-Failover  │  Load Balancing  ║
-║  Circuit Breaker  │  Health Checks  │  Real-time Dashboard  ║
+║  HTTP/HTTPS  │  SOCKS5  │  Auto-Failover  │  Load Balancing    ║
+║  Circuit Breaker  │  Health Checks  │  Real-time Dashboard     ║
 ╚════════════════════════════════════════════════════════════════╝
 ```
 
@@ -118,39 +118,39 @@ The system leverages Cloudflare's global edge network to provide low-latency con
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
 │                              CLIENT APPLICATIONS                                    │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐          │
-│  │ Browser  │  │   curl   │  │  wget    │  │  git     │  │  Docker  │   ...     │
-│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘          │
-│       │             │             │             │             │                  │
-│       └─────────────┴─────────────┴─────────────┴─────────────┘                  │
-│                                     │                                              │
-│                            ┌────────▼────────┐                                     │
-│                            │  HTTP/SOCKS5    │                                     │
-│                            │   Proxy Server  │                                     │
-│                            │  (127.0.0.1:1080)│                                    │
-│                            └────────┬────────┘                                     │
-│                                     │                                              │
-│                   ┌─────────────────┼─────────────────┐                            │
-│                   │                 │                 │                            │
-│            ┌──────▼──────┐   ┌──────▼──────┐   ┌──────▼──────┐                   │
-│            │  Worker 1   │   │  Worker 2   │   │  Worker N   │                   │
-│            │  Scoring    │   │  Scoring    │   │  Scoring    │                   │
-│            │  Health     │   │  Health     │   │  Health     │                   │
-│            │  Checks     │   │  Checks     │   │  Checks     │                   │
-│            └──────┬──────┘   └──────┬──────┘   └──────┬──────┘                   │
-│                   │                 │                 │                            │
-│                   └─────────────────┼─────────────────┘                            │
-│                                     │                                              │
-│                          ┌──────────▼──────────┐                                   │
-│                          │  Cloudflare Edge    │                                   │
-│                          │  Network (Workers)  │                                   │
-│                          └──────────┬──────────┘                                   │
-│                                     │                                              │
-└─────────────────────────────────────┼──────────────────────────────────────────────┘
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐               │
+│  │ Browser  │  │   curl   │  │  wget    │  │  git     │  │  Docker  │   ...         │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘               │
+│       │             │             │             │             │                     │
+│       └─────────────┴─────────────┴─────────────┴─────────────┘                     │
+│                                     │                                               │
+│                            ┌────────▼────────┐                                      │
+│                            │  HTTP/SOCKS5    │                                      │
+│                            │   Proxy Server  │                                      │
+│                            │  (127.0.0.1:1080)│                                     │
+│                            └────────┬────────┘                                      │
+│                                     │                                               │
+│                   ┌─────────────────┼─────────────────┐                             │
+│                   │                 │                 │                             │
+│            ┌──────▼──────┐   ┌──────▼──────┐   ┌──────▼──────┐                      │
+│            │  Worker 1   │   │  Worker 2   │   │  Worker N   │                      │
+│            │  Scoring    │   │  Scoring    │   │  Scoring    │                      │
+│            │  Health     │   │  Health     │   │  Health     │                      │
+│            │  Checks     │   │  Checks     │   │  Checks     │                      │
+│            └──────┬──────┘   └──────┬──────┘   └──────┬──────┘                      │
+│                   │                 │                 │                             │
+│                   └─────────────────┼─────────────────┘                             │
+│                                     │                                               │
+│                          ┌──────────▼──────────┐                                    │
+│                          │  Cloudflare Edge    │                                    │
+│                          │  Network (Workers)  │                                    │
+│                          └──────────┬──────────┘                                    │
+│                                     │                                               │
+└─────────────────────────────────────┼───────────────────────────────────────────────┘
                                       │
                          ┌────────────┼────────────┐
                          │            │            │
-                  ┌──────▼──────┐  ┌──▼──┐   ┌─────▼─────┐
+                  ┌──────▼──────┐  ┌──▼───┐   ┌─────▼─────┐
                   │  Target     │  │Target│   │  Target   │
                   │  Server 1   │  │Srv 2 │   │  Server 3 │
                   │  (example)  │  │      │   │           │
@@ -176,9 +176,9 @@ Client (Python)                    Cloudflare Worker
      │    "hostname": "example.com",      │
      │    "port": 443,                    │
      │    "auth": {                       │
-     │      "ts": "1712345678",          │
-     │      "nonce": "a1b2c3d4...",      │
-     │      "sig": "e5a4d3c2..."         │
+     │      "ts": "1712345678",           │
+     │      "nonce": "a1b2c3d4...",       │
+     │      "sig": "e5a4d3c2..."          │
      │    }                               │
      │  }                                 │
      │───────────────────────────────────►│
@@ -189,12 +189,12 @@ Client (Python)                    Cloudflare Worker
      │                   - Verify nonce   │
      │                                    │
      │  4. Response (Status)              │
-     │  {"status": "connected"}          │
+     │  {"status": "connected"}           │
      │◄───────────────────────────────────│
      │                                    │
      │  5. Raw TCP Data Relay Starts      │
      │  (Binary WebSocket Frames)         │
-     │◄═══════════════════════════════════►│
+     │◄══════════════════════════════════►│
      │                                    │
 ```
 
@@ -242,7 +242,7 @@ BatProxy handles HTTP CONNECT method (used for HTTPS, WebSockets, and other TLS 
 ```
 Browser/Client          BatProxy Client          Worker              Target Server
      │                        │                    │                      │
-     │ 1. CONNECT example.com:443                 │                      │
+     │ 1. CONNECT example.com:443                  │                      │
      │───────────────────────►│                    │                      │
      │                        │                    │                      │
      │                        │ 2. Select Worker   │                      │
@@ -252,11 +252,11 @@ Browser/Client          BatProxy Client          Worker              Target Serv
      │                        │ 4. Connected       │                      │
      │                        │◄───────────────────│                      │
      │                        │                    │                      │
-     │ 5. 200 OK             │                    │                      │
+     │ 5. 200 OK              │                    │                      │
      │◄───────────────────────│                    │                      │
      │                        │                    │                      │
-     │ 6. TLS Tunnel Established (Bidirectional Relay)                  │
-     │◄══════════════════════►│◄══════════════════►│◄══════════════════►│
+     │ 6. TLS Tunnel Established (Bidirectional Relay)                    │
+     │◄══════════════════════►│◄══════════════════►│◄════════════════════►│
 ```
 
 **Process Flow:**
@@ -290,11 +290,11 @@ Browser/Client          BatProxy Client          Worker              Target Serv
      │                        │ 6. Connected       │                      │
      │                        │◄───────────────────│                      │
      │                        │                    │                      │
-     │ 7. SOCKS5 Response (Success)               │                      │
+     │ 7. SOCKS5 Response (Success)                │                      │
      │◄───────────────────────│                    │                      │
      │                        │                    │                      │
-     │ 8. Bidirectional Data Relay                │                      │
-     │◄══════════════════════►│◄══════════════════►│◄══════════════════►│
+     │ 8. Bidirectional Data Relay                 │                      │
+     │◄══════════════════════►│◄══════════════════►│◄════════════════════►│
 ```
 
 **Supported SOCKS5 Features:**
@@ -359,7 +359,7 @@ Worker States:
      │ Consecutive failures >= 3
      ▼
 ┌─────────┐
-│ HALF-OPEN│ ← Probationary state (limited retries)
+│HALF-OPEN│ ← Probationary state (limited retries)
 └────┬────┘
      │ Additional failure
      ▼
@@ -369,7 +369,7 @@ Worker States:
      │ Cooldown expires / Health check success
      ▼
 ┌─────────┐
-│ HALF-OPEN│ ← Retry with one request
+│HALF-OPEN│ ← Retry with one request
 └────┬────┘
      │ Success
      ▼
@@ -401,19 +401,19 @@ The background health check system continuously monitors worker health:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     Health Check Loop                          │
-│                   (Every HEALTH_CHECK_INTERVAL)               │
+│                     Health Check Loop                           │
+│                   (Every HEALTH_CHECK_INTERVAL)                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  1. For each worker in "open" state:                           │
-│     ├── Send "ping" command with HMAC authentication          │
-│     ├── Wait for "pong" response (timeout: CONNECT_TIMEOUT)   │
-│     ├── If successful:                                         │
-│     │   ├── Update EWMA RTT                                   │
-│     │   ├── Transition state: OPEN → HALF-OPEN               │
-│     │   └── Decrement consecutive failure counter             │
-│     └── If failed:                                             │
-│         └── Keep in OPEN state (extend cooldown)              │
+│  1. For each worker in "open" state:                            │
+│     ├── Send "ping" command with HMAC authentication            │
+│     ├── Wait for "pong" response (timeout: CONNECT_TIMEOUT)     │
+│     ├── If successful:                                          │
+│     │   ├── Update EWMA RTT                                     │
+│     │   ├── Transition state: OPEN → HALF-OPEN                  │
+│     │   └── Decrement consecutive failure counter               │
+│     └── If failed:                                              │
+│         └── Keep in OPEN state (extend cooldown)                │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -562,25 +562,25 @@ The Python client is built on `asyncio` with a modular, event-driven architectur
 │                      Asyncio Event Loop                     │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
-│  ┌────────────────┐  ┌────────────────┐  ┌──────────────┐ │
-│  │  HTTP Handler  │  │ SOCKS5 Handler │  │ HTTP Handler │ │
-│  └───────┬────────┘  └───────┬────────┘  └──────┬───────┘ │
-│          │                   │                   │          │
-│          └───────────────────┼───────────────────┘          │
+│  ┌────────────────┐  ┌────────────────┐  ┌──────────────┐   │
+│  │  HTTP Handler  │  │ SOCKS5 Handler │  │ HTTP Handler │   │
+│  └───────┬────────┘  └───────┬────────┘  └──────┬───────┘   │
+│          │                   │                  │           │
+│          └───────────────────┼──────────────────┘           │
 │                              │                              │
 │                  ┌───────────▼────────────┐                 │
 │                  │  Tunnel Manager        │                 │
 │                  │  - Worker Selection    │                 │
-│                  │  - Connection Pool    │                 │
-│                  │  - Health Checks      │                 │
+│                  │  - Connection Pool     │                 │
+│                  │  - Health Checks       │                 │
 │                  └───────────┬────────────┘                 │
 │                              │                              │
-│          ┌───────────────────┼───────────────────┐          │
-│          │                   │                   │          │
-│  ┌───────▼───────┐  ┌───────▼───────┐  ┌───────▼──────┐ │
-│  │  Worker 1     │  │  Worker 2     │  │  Worker N    │ │
-│  │  WebSocket    │  │  WebSocket    │  │  WebSocket   │ │
-│  └───────────────┘  └───────────────┘  └──────────────┘ │
+│          ┌───────────────────┼──────────────────┐           │
+│          │                   │                  │           │
+│  ┌───────▼───────┐  ┌───────▼───────┐  ┌───────▼──────┐     │
+│  │  Worker 1     │  │  Worker 2     │  │  Worker N    │     │
+│  │  WebSocket    │  │  WebSocket    │  │  WebSocket   │     │
+│  └───────────────┘  └───────────────┘  └──────────────┘     │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -614,26 +614,26 @@ def make_token(password, subject):
 │                    Authentication Verification                  │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  Input: password, subject, auth_token                          │
+│  Input: password, subject, auth_token                           │
 │                                                                 │
-│  1. Extract: ts, nonce, sig from auth_token                   │
+│  1. Extract: ts, nonce, sig from auth_token                     │
 │                                                                 │
-│  2. Timestamp Validation:                                      │
-│     └── current_time - ts <= AUTH_WINDOW (30s)               │
+│  2. Timestamp Validation:                                       │
+│     └── current_time - ts <= AUTH_WINDOW (30s)                  │
 │                                                                 │
-│  3. HMAC Recalculation:                                        │
-│     └── expected = HMAC-SHA256(password, subject:ts:nonce)   │
+│  3. HMAC Recalculation:                                         │
+│     └── expected = HMAC-SHA256(password, subject:ts:nonce)      │
 │                                                                 │
-│  4. Signature Match:                                           │
-│     └── constant_time_compare(expected, sig)                  │
+│  4. Signature Match:                                            │
+│     └── constant_time_compare(expected, sig)                    │
 │                                                                 │
-│  5. Nonce Uniqueness:                                          │
-│     └── claimNonce(nonce, current_time)                       │
-│         ├── Check if nonce exists in seenNonces map           │
-│         ├── If not, add with expiry (current_time + window)   │
-│         └── If exists, reject (replay attack)                 │
+│  5. Nonce Uniqueness:                                           │
+│     └── claimNonce(nonce, current_time)                         │
+│         ├── Check if nonce exists in seenNonces map             │
+│         ├── If not, add with expiry (current_time + window)     │
+│         └── If exists, reject (replay attack)                   │
 │                                                                 │
-│  6. All checks passed → Authentication successful              │
+│  6. All checks passed → Authentication successful               │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -718,12 +718,12 @@ The terminal dashboard provides real-time monitoring with colored output:
   (tip: pip install rich  -> colored live dashboard)
 
 ╭────────────────────────────────────────────────────────────────────╮
-│ 🦇 Bat Proxy                                                     │
+│ 🦇 Bat Proxy                                                      │
 ├────────────────────────────────────────────────────────────────────┤
-│ Active │ Total │ OK    │ Failed                                  │
-│ 12     │ 1547  │ 1532  │ 15                                      │
+│ Active │ Total │ OK    │ Failed                                    │
+│ 12     │ 1547  │ 1532  │ 15                                        │
 ├────────────────────────────────────────────────────────────────────┤
-│ Workers                                                          │
+│ Workers                                                            │
 ├──────────┬──────────┬──────────┬──────────┬──────────┬──────────┤
 │ Worker   │ Status   │ Conns    │ RTT      │ Score    │ OK/Fail  │
 ├──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤
@@ -1207,9 +1207,6 @@ A: The system can handle 1000+ concurrent connections with proper configuration.
 **Q: Can I use it for torrents or P2P?**
 A: While technically possible, we recommend against it. Cloudflare Workers have usage limits, and P2P traffic may violate their terms of service.
 
-**Q: Is it secure for banking/private data?**
-A: Yes, all traffic is encrypted via WebSocket (WSS) and the authentication system is secure. However, we recommend using additional encryption (VPN, HTTPS) for sensitive data.
-
 **Q: How much does it cost?**
 A: Cloudflare Workers has a free tier with limited usage. Paid plans start at $5/month and offer higher limits.
 
@@ -1224,65 +1221,3 @@ A: Yes, both the client and Cloudflare Workers support IPv6 addressing.
 
 **Q: How do I update the worker code?**
 A: Edit the code in Cloudflare dashboard and click "Save and Deploy". Wait 1-2 minutes for propagation.
-
----
-
-## 🗺 Roadmap
-
-### Version 2.1 (Q3 2024)
-- [ ] UDP support (for DNS over HTTPS, WebRTC)
-- [ ] WebSocket compression for better bandwidth
-- [ ] Multi-region health checks
-- [ ] Improved load balancing algorithms
-
-### Version 2.2 (Q4 2024)
-- [ ] Docker containerization
-- [ ] Kubernetes support
-- [ ] Prometheus metrics integration
-- [ ] Grafana dashboards
-
-### Version 3.0 (Q1 2025)
-- [ ] WebRTC-based direct connections (P2P)
-- [ ] Machine learning-based worker selection
-- [ ] Automatic capacity planning
-- [ ] Blockchain-based worker registry
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Here's how you can help:
-
-### Report Bugs
-- Create an issue with detailed steps to reproduce
-- Include version information and system details
-- Attach logs (with sensitive info redacted)
-
-### Suggest Features
-- Create a feature request issue
-- Describe the use case and benefits
-- Suggest implementation approach if possible
-
-### Contribute Code
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes with tests
-4. Ensure code style matches the project
-5. Commit your changes (`git commit -m 'Add amazing feature'`)
-6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
-
-### Code Style
-- Python: PEP 8 compliance
-- JavaScript: ES6+ standards
-- Comments: For complex algorithms
-- Documentation: For new features
-
-### Testing
-```bash
-# Run tests
-python -m pytest tests/
-
-# Run linting
-pylint batproxy.py
-```
