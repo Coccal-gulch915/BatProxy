@@ -847,7 +847,7 @@ wrangler deploy
 ```bash
 # Ubuntu/Debian
 sudo apt update
-sudo apt install python3 python3-pip python3-venv
+sudo apt install python3 python3-pip
 
 # macOS (using Homebrew)
 brew install python3
@@ -862,13 +862,7 @@ git clone https://github.com/batmanpriv/BatProxy.git
 cd BatProxy
 ```
 
-**3. Create Virtual Environment (Recommended)**
-```bash
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-**4. Install Dependencies**
+**3. Install Dependencies**
 ```bash
 # Install core dependencies
 pip install websockets
@@ -880,7 +874,7 @@ pip install rich
 pip install uvloop
 ```
 
-**5. Verify Installation**
+**4. Verify Installation**
 ```bash
 python batproxy.py --version
 # Should output: BatProxy v2.0
@@ -892,11 +886,11 @@ python batproxy.py --version
 
 ### Client Configuration
 
-The client is configured via `config.py` or environment variables.
+The client is configured via `configx.py` or environment variables.
 
 **Worker Configuration:**
 ```python
-# config.py
+# configx.py
 WORKERS = [
     {"url": "wss://worker1.workers.dev", "password": "your_password"},
     {"url": "wss://worker2.workers.dev", "password": "your_password"},
