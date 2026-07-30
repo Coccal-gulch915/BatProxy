@@ -148,24 +148,12 @@ cd BatProxy
 **گام سوم: کتابخونه‌های مورد نیاز رو نصب کن**
 
 ```bash
-pip install websockets
-```
-
-اگه دوست داری داشبورد رنگی توی ترمینال داشته باشی:
-
-```bash
-pip install rich
-```
-
-اگه میخوای سرعت بیشتری داشته باشی:
-
-```bash
-pip install uvloop
+pip install -r requirements.txt
 ```
 
 **گام چهارم: تنظیمات رو انجام بده**
 
-فایل `config.py` رو باز کن و آدرس ورکر خودت رو بذار:
+فایل `configx.py` رو باز کن و آدرس ورکر خودت رو بذار:
 
 ```python
 WORKERS = [
