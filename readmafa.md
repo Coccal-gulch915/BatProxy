@@ -121,10 +121,9 @@
 ۲. همه کدهای داخل ویرایشگر رو **پاک کن**  
 ۳. کد زیر رو **کپی** کن و جایگزین کن:
 
-```javascript
-// کل کد Worker رو از اینجا کپی کن
-// https://github.com/batmanpriv/BatProxy/blob/main/worker/worker.js
-```
+
+<a href="https://github.com/batmanpriv/BatProxy/blob/main/worker/worker.js">Worker
+
 
 ۴. روی **"Save and Deploy"** کلیک کن  
 ۵. یه دقیقه صبر کن تا تغییرات اعمال بشه  
