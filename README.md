@@ -789,9 +789,9 @@ The HTML dashboard provides a clean, browser-based interface:
 
 ### Dependencies
 ```
-websockets>=10.0.0
-rich>=13.0.0        # Optional, for better dashboard
-uvloop>=0.17.0      # Optional, for better performance
+websocket-client
+rich        # Optional, for better dashboard
+uvloop      # Optional, for better performance
 ```
 
 ---
@@ -873,21 +873,8 @@ cd BatProxy
 **3. Install Dependencies**
 ```bash
 # Install core dependencies
-pip install websockets
-
-# Optional: Install for better dashboard
-pip install rich
-
-# Optional: Install for better performance
-pip install uvloop
+pip install -r requirements.txt
 ```
-
-**4. Verify Installation**
-```bash
-python batproxy.py --version
-# Should output: BatProxy v2.0
-```
-
 ---
 
 ## ⚙️ Configuration
