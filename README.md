@@ -6,7 +6,9 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
 <p align="center">
-  <a href="README.md">English</a> | <a href="readmafa.md"</a> | <a href="readmafa.md#مرحله-به-مرحله-نصب-و-راه‌اندازی">فارسی</a>
+  <a href="README.md">English</a> | 
+  <a href="readmafa.md">فارسی</a> | 
+  <a href="readmafa.md#مرحله-به-مرحله-نصب-و-راه‌اندازی">🚀 راه‌اندازی سریع</a>
 </p>
 
 ![BatProxy Banner](https://github.com/user-attachments/assets/37f66bd2-26ae-4eb8-a6ab-e90e130684a3)
