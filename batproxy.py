@@ -7,9 +7,10 @@ import socket
 import struct
 import time
 import json
+from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import urlparse
 from configx import WORKERS
-import websockets
+import websocket
 
 try:
     from rich.console import Console
@@ -46,10 +47,130 @@ ALPHA_RTT = 0.35
 SLOW_RTT_MS = 600
 SLOW_PENALTY = 20.0
 RETRYABLE_METHODS = {"GET", "HEAD"}
+WS_PING_INTERVAL = 20
+
+# Each open tunnel keeps one thread parked in a blocking recv() call for
+# its whole lifetime, plus short-lived threads for sends/pings. Size the
+# pool generously so it can't starve under load (tune if you raise
+# MAX_CONN_PER_WORKER or add many workers).
+WS_EXECUTOR_WORKERS = 512
+ws_executor = ThreadPoolExecutor(max_workers=WS_EXECUTOR_WORKERS, thread_name_prefix="ws-io")
 
 console = Console() if HAVE_RICH else None
 VERBOSE = False
 
+
+# --- sync -> async websocket bridge -------------------------------------
+
+class ConnectionClosedError(Exception):
+    pass
+
+
+class AsyncWS:
+    """Wraps a synchronous websocket-client WebSocket connection so it can
+    be used with the same async/await + `async for` patterns the rest of
+    this program was written against, without touching an event loop
+    thread with blocking socket calls."""
+
+    __slots__ = ("_ws", "_loop", "_ping_task", "_closed")
+
+    def __init__(self, raw_ws, loop):
+        self._ws = raw_ws
+        self._loop = loop
+        self._ping_task = None
+        self._closed = False
+
+    async def send(self, data):
+        if isinstance(data, (bytes, bytearray)):
+            payload = bytes(data)
+            opcode = websocket.ABNF.OPCODE_BINARY
+        else:
+            payload = data
+            opcode = websocket.ABNF.OPCODE_TEXT
+        try:
+            await self._loop.run_in_executor(ws_executor, self._ws.send, payload, opcode)
+        except (websocket.WebSocketException, OSError) as e:
+            raise ConnectionClosedError(str(e)) from e
+
+    async def recv(self):
+        try:
+            msg = await self._loop.run_in_executor(ws_executor, self._ws.recv)
+        except (websocket.WebSocketException, OSError) as e:
+            raise ConnectionClosedError(str(e)) from e
+        if msg is None or msg == "":
+            # websocket-client returns "" on a clean close in some versions
+            if self._ws.connected:
+                return msg
+            raise ConnectionClosedError("connection closed")
+        return msg
+
+    async def close(self):
+        if self._closed:
+            return
+        self._closed = True
+        self.stop_keepalive()
+        try:
+            await self._loop.run_in_executor(ws_executor, self._ws.close)
+        except Exception:
+            pass
+
+    def start_keepalive(self, interval=WS_PING_INTERVAL):
+        if interval and self._ping_task is None:
+            self._ping_task = asyncio.ensure_future(self._keepalive_loop(interval))
+
+    def stop_keepalive(self):
+        if self._ping_task and not self._ping_task.done():
+            self._ping_task.cancel()
+
+    async def _keepalive_loop(self, interval):
+        try:
+            while True:
+                await asyncio.sleep(interval)
+                await self._loop.run_in_executor(ws_executor, self._ws.ping)
+        except asyncio.CancelledError:
+            pass
+        except Exception:
+            pass
+
+    def __aiter__(self):
+        return self
+
+    async def __anext__(self):
+        try:
+            msg = await self.recv()
+        except ConnectionClosedError:
+            raise StopAsyncIteration
+        return msg
+
+
+async def ws_connect(url, timeout=CONNECT_TIMEOUT, keepalive=0):
+    """Async wrapper around websocket-client's create_connection()."""
+    loop = asyncio.get_event_loop()
+
+    def _do_connect():
+        return websocket.create_connection(
+            url,
+            timeout=timeout,
+            enable_multithread=True,
+        )
+
+    try:
+        raw_ws = await asyncio.wait_for(
+            loop.run_in_executor(ws_executor, _do_connect),
+            timeout=timeout,
+        )
+    except asyncio.TimeoutError as e:
+        raise ConnectionError(f"connect timeout: {url}") from e
+    except (websocket.WebSocketException, OSError, ValueError) as e:
+        raise ConnectionError(str(e)) from e
+
+    ws = AsyncWS(raw_ws, loop)
+    if keepalive:
+        ws.start_keepalive(keepalive)
+    return ws
+
+
+# --- rest of the program (unchanged logic, now driven by AsyncWS) -------
 
 def make_token(password, subject):
     ts = str(int(time.time()))
@@ -179,10 +300,7 @@ async def open_tunnel(hostname, port, exclude=None):
         attempts += 1
         t0 = time.time()
         try:
-            ws = await asyncio.wait_for(
-                websockets.connect(worker["url"], max_size=None, ping_interval=20, compression=None),
-                timeout=CONNECT_TIMEOUT,
-            )
+            ws = await ws_connect(worker["url"], timeout=CONNECT_TIMEOUT, keepalive=WS_PING_INTERVAL)
             token = make_token(worker["password"], key)
             init = json.dumps({"hostname": hostname, "port": port, "auth": token})
             await ws.send(init)
@@ -217,10 +335,7 @@ async def health_check_loop():
             if st.state != "open":
                 continue
             try:
-                ws = await asyncio.wait_for(
-                    websockets.connect(w["url"], max_size=None, compression=None),
-                    timeout=CONNECT_TIMEOUT,
-                )
+                ws = await ws_connect(w["url"], timeout=CONNECT_TIMEOUT)
                 token = make_token(w["password"], "ping")
                 t0 = time.time()
                 await ws.send(json.dumps({"cmd": "ping", "auth": token}))
